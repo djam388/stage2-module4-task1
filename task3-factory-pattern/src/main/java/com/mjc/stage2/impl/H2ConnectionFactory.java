@@ -9,14 +9,20 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class H2ConnectionFactory implements ConnectionFactory {
-    Properties appProperties = new ReadAppProperties().getProperties();
+
     Connection connection = null;
 
-    public H2ConnectionFactory() throws IOException {
+    public H2ConnectionFactory() {
     }
 
     @Override
     public Connection createConnection() {
+        Properties appProperties;
+        try {
+            appProperties = new ReadAppProperties().getProperties();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             Class.forName(appProperties.getProperty("jdbc_driver"));
@@ -24,10 +30,8 @@ public class H2ConnectionFactory implements ConnectionFactory {
                     appProperties.getProperty("user"),
                     appProperties.getProperty("password"));
         }
-        catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        catch (ClassNotFoundException e) {
+
+        catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return connection;
