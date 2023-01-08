@@ -9,13 +9,17 @@ public class ReadAppProperties {
     public ReadAppProperties() {
     }
 
-    public Properties getProperties() throws IOException {
+    public Properties getProperties() {
         InputStream input = ReadAppProperties.class.getClassLoader().getResourceAsStream("h2database.properties");
 
         if (input == null) {
             return null;
         }
-        properties.load(input);
+        try {
+            properties.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         return properties;
