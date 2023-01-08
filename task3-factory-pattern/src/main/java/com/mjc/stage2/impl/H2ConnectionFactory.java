@@ -16,11 +16,20 @@ public class H2ConnectionFactory implements ConnectionFactory {
     }
 
     @Override
-    public Connection createConnection() throws SQLException, ClassNotFoundException {
-        Class.forName(appProperties.getProperty("jdbc_driver"));
-        connection = DriverManager.getConnection(appProperties.getProperty("db_url"),
-                appProperties.getProperty("user"),
-                appProperties.getProperty("password"));
+    public Connection createConnection() {
+
+        try {
+            Class.forName(appProperties.getProperty("jdbc_driver"));
+            connection = DriverManager.getConnection(appProperties.getProperty("db_url"),
+                    appProperties.getProperty("user"),
+                    appProperties.getProperty("password"));
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return connection;
     }
     // Write your code here!
